@@ -169,12 +169,12 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-CORS_ALLOWED_ORIGINS = [
+CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[
+    "https://uniqueytravels.com",
+    "https://www.uniqueytravels.com",
     "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
+    "http://127.0.0.1:3000"
+])
 
 # Allow credentials (like cookies/auth headers) to be sent
 CORS_ALLOW_CREDENTIALS = True
@@ -236,7 +236,6 @@ AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = 'public-read'
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
-CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=['https://p01--uniquey-backend--lmxrfbr8tjtj.code.run'])
-
+CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=['https://uniqueytravels.com', 'https://www.uniqueytravels.com', 'http://localhost:3000', 'http://127.0.0.1:3000'])
 # MEDIA_URL = '/media/'
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
