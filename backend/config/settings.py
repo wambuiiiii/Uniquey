@@ -235,5 +235,8 @@ AWS_S3_REGION_NAME = env('SUPABASE_REGION', default='eu-west-1') # Match your Su
 AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = 'public-read'
 
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
+CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=['https://p01--uniquey-backend--lmxrfbr8tjtj.code.run'])
+
 # MEDIA_URL = '/media/'
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
