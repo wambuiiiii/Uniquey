@@ -49,17 +49,15 @@ export function SiteFooter() {
           </h4>
           <ul className="space-y-3 text-sm">
             <li className="flex items-center gap-2">
-              <Phone className="h-4 w-4" /> +254 700 000 000
+              <Phone className="h-4 w-4" /> +254 746148654
             </li>
             <li className="flex items-center gap-2">
               <MessageCircle className="h-4 w-4" /> WhatsApp 24/7
             </li>
             <li className="flex items-center gap-2">
-              <Mail className="h-4 w-4" /> concierge@uniquey.co.ke
+              <Mail className="h-4 w-4" /> concierge@uniqueytravels.com
             </li>
-            <li className="pt-2 text-forest-foreground/70">
-              Emergency: +254 711 111 111
-            </li>
+
           </ul>
         </div>
 
