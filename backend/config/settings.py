@@ -34,7 +34,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # Security settings
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = env('SECRET_KEY', default='django-insecure-build-placeholder-key')
 DEBUG = env('DEBUG')
 SUPABASE_URL = env('SUPABASE_URL')
 SUPABASE_ANON_KEY = env('SUPABASE_ANON_KEY')
