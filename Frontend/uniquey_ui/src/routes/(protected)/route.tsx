@@ -8,17 +8,15 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAuth } from "@/context/AuthContext";
 
 export const Route = createFileRoute("/(protected)")({
-  beforeLoad: ({ context }) => {
-    // 1. Halt router redirects if the AuthContext is still checking localStorage/API
-    if (context.auth.isLoading) {
-      return;
-    }
-
-    // 2. Safely redirect if loading is finished and they are not an admin
-    if (!context.auth.isAuthenticated || context.auth.user?.role !== "admin") {
-      throw redirect({ to: "/portal" });
-    }
-  },
+beforeLoad: ({ context }) => {
+  if (context.auth.isLoading) return;
+  if (!context.auth.isAuthenticated) {
+    throw redirect({ to: "/admin-auth/login" });
+  }
+  if (context.auth.user?.role !== "admin") {
+    throw redirect({ to: "/portal" });
+  }
+},
   component: AdminLayout,
 });
 

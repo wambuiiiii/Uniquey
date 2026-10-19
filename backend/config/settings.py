@@ -81,10 +81,14 @@ MIDDLEWARE = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    # Optional: You can enforce authentication globally, but we used permission_classes on individual views
+    "DEFAULT_THROTTLE_RATES": {
+        "invite": "10/hour",
+    },
+    "NUM_PROXIES": 1,
+    # ...keep your other existing keys (pagination, permissions, etc.)
 }
 
 # Configure the JWT lifecycle and security parameters
