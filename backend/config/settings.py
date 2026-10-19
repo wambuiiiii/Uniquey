@@ -234,8 +234,10 @@ AWS_S3_REGION_NAME = env('SUPABASE_REGION', default='eu-west-1') # Match your Su
 # Ensure files aren't overwritten if they have the same name
 AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = 'public-read'
-
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
+# The first setting removes the ?AWSAccessKeyId=... part. The second makes Django build the public-style address. Your database should only store the file path (like packages/experience-family.jpg), so no data changes are needed.
+AWS_QUERYSTRING_AUTH = False
+AWS_S3_CUSTOM_DOMAIN = "bjwdcjhgclgpfwilwhce.supabase.co/storage/v1/object/public/uniquey-media"
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
 CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=['https://uniqueytravels.com', 'https://www.uniqueytravels.com', 'http://localhost:3000', 'http://127.0.0.1:3000'])
 # MEDIA_URL = '/media/'
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
