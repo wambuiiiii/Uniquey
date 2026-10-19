@@ -9,100 +9,51 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as publicRouteRouteImport } from './routes/(public)/route'
 import { Route as protectedRouteRouteImport } from './routes/(protected)/route'
-import { Route as publicIndexRouteImport } from './routes/(public)/index'
-import { Route as AdminAuthLoginRouteImport } from './routes/admin-auth/login'
-import { Route as publicWhyUniqueyRouteImport } from './routes/(public)/why-uniquey'
-import { Route as publicTestimonialsRouteImport } from './routes/(public)/testimonials'
-import { Route as publicPlanMyStayRouteImport } from './routes/(public)/plan-my-stay'
-import { Route as publicHowItWorksRouteImport } from './routes/(public)/how-it-works'
-import { Route as publicFaqRouteImport } from './routes/(public)/faq'
-import { Route as publicContactRouteImport } from './routes/(public)/contact'
-import { Route as publicAboutRouteImport } from './routes/(public)/about'
-import { Route as authSignupRouteImport } from './routes/(auth)/signup'
+import { Route as publicRouteRouteImport } from './routes/(public)/route'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
+import { Route as authSignupRouteImport } from './routes/(auth)/signup'
+import { Route as protectedcustomerRouteRouteImport } from './routes/(protected)/(customer)/route'
 import { Route as protectedAdminRouteRouteImport } from './routes/(protected)/admin/route'
-import { Route as publicExperiencesIndexRouteImport } from './routes/(public)/experiences.index'
-import { Route as publicBlogIndexRouteImport } from './routes/(public)/blog.index'
-import { Route as protectedAdminIndexRouteImport } from './routes/(protected)/admin/index'
-import { Route as publicProposalsInquiryIdRouteImport } from './routes/(public)/proposals.$inquiryId'
-import { Route as publicPayInvoiceIdRouteImport } from './routes/(public)/pay.$invoiceId'
-import { Route as publicExperiencesSlugRouteImport } from './routes/(public)/experiences.$slug'
-import { Route as publicBlogSlugRouteImport } from './routes/(public)/blog.$slug'
-import { Route as protectedAdminTransfersRouteImport } from './routes/(protected)/admin/transfers'
-import { Route as protectedAdminSupportRouteImport } from './routes/(protected)/admin/support'
-import { Route as protectedAdminSettingsRouteImport } from './routes/(protected)/admin/settings'
-import { Route as protectedAdminInvoicesRouteImport } from './routes/(protected)/admin/invoices'
-import { Route as protectedAdminInquiriesRouteImport } from './routes/(protected)/admin/inquiries'
-import { Route as protectedAdminGuestsRouteImport } from './routes/(protected)/admin/guests'
-import { Route as protectedAdminExperiencesRouteImport } from './routes/(protected)/admin/experiences'
-import { Route as protectedAdminCalendarRouteImport } from './routes/(protected)/admin/calendar'
-import { Route as protectedAdminApartmentsRouteImport } from './routes/(protected)/admin/apartments'
+import { Route as publicIndexRouteImport } from './routes/(public)/index'
+import { Route as publicAboutRouteImport } from './routes/(public)/about'
+import { Route as publicContactRouteImport } from './routes/(public)/contact'
+import { Route as publicFaqRouteImport } from './routes/(public)/faq'
+import { Route as publicHowItWorksRouteImport } from './routes/(public)/how-it-works'
+import { Route as publicPlanMyStayRouteImport } from './routes/(public)/plan-my-stay'
+import { Route as publicTestimonialsRouteImport } from './routes/(public)/testimonials'
+import { Route as publicWhyUniqueyRouteImport } from './routes/(public)/why-uniquey'
+import { Route as AdminAuthLoginRouteImport } from './routes/admin-auth/login'
 import { Route as protectedcustomerPortalRouteImport } from './routes/(protected)/(customer)/portal'
+import { Route as protectedAdminIndexRouteImport } from './routes/(protected)/admin/index'
+import { Route as protectedAdminApartmentsRouteImport } from './routes/(protected)/admin/apartments'
+import { Route as protectedAdminCalendarRouteImport } from './routes/(protected)/admin/calendar'
+import { Route as protectedAdminExperiencesRouteImport } from './routes/(protected)/admin/experiences'
+import { Route as protectedAdminGuestsRouteImport } from './routes/(protected)/admin/guests'
+import { Route as protectedAdminInquiriesRouteImport } from './routes/(protected)/admin/inquiries'
+import { Route as protectedAdminInvoicesRouteImport } from './routes/(protected)/admin/invoices'
+import { Route as protectedAdminSettingsRouteImport } from './routes/(protected)/admin/settings'
+import { Route as protectedAdminSupportRouteImport } from './routes/(protected)/admin/support'
+import { Route as protectedAdminTransfersRouteImport } from './routes/(protected)/admin/transfers'
+import { Route as publicBlogIndexRouteImport } from './routes/(public)/blog.index'
+import { Route as publicBlogSlugRouteImport } from './routes/(public)/blog.$slug'
+import { Route as publicExperiencesIndexRouteImport } from './routes/(public)/experiences.index'
+import { Route as publicExperiencesSlugRouteImport } from './routes/(public)/experiences.$slug'
+import { Route as publicPayInvoiceIdRouteImport } from './routes/(public)/pay.$invoiceId'
+import { Route as publicProposalsInquiryIdRouteImport } from './routes/(public)/proposals.$inquiryId'
 
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
+const protectedRouteRoute = protectedRouteRouteImport.update({
+  id: '/(protected)',
   getParentRoute: () => rootRouteImport,
 } as any)
 const publicRouteRoute = publicRouteRouteImport.update({
   id: '/(public)',
   getParentRoute: () => rootRouteImport,
 } as any)
-const protectedRouteRoute = protectedRouteRouteImport.update({
-  id: '/(protected)',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const publicIndexRoute = publicIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => publicRouteRoute,
-} as any)
-const AdminAuthLoginRoute = AdminAuthLoginRouteImport.update({
-  id: '/admin-auth/login',
-  path: '/admin-auth/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const publicWhyUniqueyRoute = publicWhyUniqueyRouteImport.update({
-  id: '/why-uniquey',
-  path: '/why-uniquey',
-  getParentRoute: () => publicRouteRoute,
-} as any)
-const publicTestimonialsRoute = publicTestimonialsRouteImport.update({
-  id: '/testimonials',
-  path: '/testimonials',
-  getParentRoute: () => publicRouteRoute,
-} as any)
-const publicPlanMyStayRoute = publicPlanMyStayRouteImport.update({
-  id: '/plan-my-stay',
-  path: '/plan-my-stay',
-  getParentRoute: () => publicRouteRoute,
-} as any)
-const publicHowItWorksRoute = publicHowItWorksRouteImport.update({
-  id: '/how-it-works',
-  path: '/how-it-works',
-  getParentRoute: () => publicRouteRoute,
-} as any)
-const publicFaqRoute = publicFaqRouteImport.update({
-  id: '/faq',
-  path: '/faq',
-  getParentRoute: () => publicRouteRoute,
-} as any)
-const publicContactRoute = publicContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => publicRouteRoute,
-} as any)
-const publicAboutRoute = publicAboutRouteImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => publicRouteRoute,
-} as any)
-const authSignupRoute = authSignupRouteImport.update({
-  id: '/(auth)/signup',
-  path: '/signup',
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const authLoginRoute = authLoginRouteImport.update({
@@ -110,86 +61,73 @@ const authLoginRoute = authLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const authSignupRoute = authSignupRouteImport.update({
+  id: '/(auth)/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const protectedcustomerRouteRoute = protectedcustomerRouteRouteImport.update({
+  id: '/(customer)',
+  getParentRoute: () => protectedRouteRoute,
+} as any)
 const protectedAdminRouteRoute = protectedAdminRouteRouteImport.update({
   id: '/admin',
   path: '/admin',
   getParentRoute: () => protectedRouteRoute,
 } as any)
-const publicExperiencesIndexRoute = publicExperiencesIndexRouteImport.update({
-  id: '/experiences/',
-  path: '/experiences/',
+const publicIndexRoute = publicIndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => publicRouteRoute,
 } as any)
-const publicBlogIndexRoute = publicBlogIndexRouteImport.update({
-  id: '/blog/',
-  path: '/blog/',
+const publicAboutRoute = publicAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => publicRouteRoute,
+} as any)
+const publicContactRoute = publicContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicFaqRoute = publicFaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicHowItWorksRoute = publicHowItWorksRouteImport.update({
+  id: '/how-it-works',
+  path: '/how-it-works',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicPlanMyStayRoute = publicPlanMyStayRouteImport.update({
+  id: '/plan-my-stay',
+  path: '/plan-my-stay',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicTestimonialsRoute = publicTestimonialsRouteImport.update({
+  id: '/testimonials',
+  path: '/testimonials',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicWhyUniqueyRoute = publicWhyUniqueyRouteImport.update({
+  id: '/why-uniquey',
+  path: '/why-uniquey',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const AdminAuthLoginRoute = AdminAuthLoginRouteImport.update({
+  id: '/admin-auth/login',
+  path: '/admin-auth/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const protectedcustomerPortalRoute = protectedcustomerPortalRouteImport.update({
+  id: '/portal',
+  path: '/portal',
+  getParentRoute: () => protectedcustomerRouteRoute,
 } as any)
 const protectedAdminIndexRoute = protectedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => protectedAdminRouteRoute,
-} as any)
-const publicProposalsInquiryIdRoute =
-  publicProposalsInquiryIdRouteImport.update({
-    id: '/proposals/$inquiryId',
-    path: '/proposals/$inquiryId',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicPayInvoiceIdRoute = publicPayInvoiceIdRouteImport.update({
-  id: '/pay/$invoiceId',
-  path: '/pay/$invoiceId',
-  getParentRoute: () => publicRouteRoute,
-} as any)
-const publicExperiencesSlugRoute = publicExperiencesSlugRouteImport.update({
-  id: '/experiences/$slug',
-  path: '/experiences/$slug',
-  getParentRoute: () => publicRouteRoute,
-} as any)
-const publicBlogSlugRoute = publicBlogSlugRouteImport.update({
-  id: '/blog/$slug',
-  path: '/blog/$slug',
-  getParentRoute: () => publicRouteRoute,
-} as any)
-const protectedAdminTransfersRoute = protectedAdminTransfersRouteImport.update({
-  id: '/transfers',
-  path: '/transfers',
-  getParentRoute: () => protectedAdminRouteRoute,
-} as any)
-const protectedAdminSupportRoute = protectedAdminSupportRouteImport.update({
-  id: '/support',
-  path: '/support',
-  getParentRoute: () => protectedAdminRouteRoute,
-} as any)
-const protectedAdminSettingsRoute = protectedAdminSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => protectedAdminRouteRoute,
-} as any)
-const protectedAdminInvoicesRoute = protectedAdminInvoicesRouteImport.update({
-  id: '/invoices',
-  path: '/invoices',
-  getParentRoute: () => protectedAdminRouteRoute,
-} as any)
-const protectedAdminInquiriesRoute = protectedAdminInquiriesRouteImport.update({
-  id: '/inquiries',
-  path: '/inquiries',
-  getParentRoute: () => protectedAdminRouteRoute,
-} as any)
-const protectedAdminGuestsRoute = protectedAdminGuestsRouteImport.update({
-  id: '/guests',
-  path: '/guests',
-  getParentRoute: () => protectedAdminRouteRoute,
-} as any)
-const protectedAdminExperiencesRoute =
-  protectedAdminExperiencesRouteImport.update({
-    id: '/experiences',
-    path: '/experiences',
-    getParentRoute: () => protectedAdminRouteRoute,
-  } as any)
-const protectedAdminCalendarRoute = protectedAdminCalendarRouteImport.update({
-  id: '/calendar',
-  path: '/calendar',
   getParentRoute: () => protectedAdminRouteRoute,
 } as any)
 const protectedAdminApartmentsRoute =
@@ -198,11 +136,78 @@ const protectedAdminApartmentsRoute =
     path: '/apartments',
     getParentRoute: () => protectedAdminRouteRoute,
   } as any)
-const protectedcustomerPortalRoute = protectedcustomerPortalRouteImport.update({
-  id: '/(customer)/portal',
-  path: '/portal',
-  getParentRoute: () => protectedRouteRoute,
+const protectedAdminCalendarRoute = protectedAdminCalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => protectedAdminRouteRoute,
 } as any)
+const protectedAdminExperiencesRoute =
+  protectedAdminExperiencesRouteImport.update({
+    id: '/experiences',
+    path: '/experiences',
+    getParentRoute: () => protectedAdminRouteRoute,
+  } as any)
+const protectedAdminGuestsRoute = protectedAdminGuestsRouteImport.update({
+  id: '/guests',
+  path: '/guests',
+  getParentRoute: () => protectedAdminRouteRoute,
+} as any)
+const protectedAdminInquiriesRoute = protectedAdminInquiriesRouteImport.update({
+  id: '/inquiries',
+  path: '/inquiries',
+  getParentRoute: () => protectedAdminRouteRoute,
+} as any)
+const protectedAdminInvoicesRoute = protectedAdminInvoicesRouteImport.update({
+  id: '/invoices',
+  path: '/invoices',
+  getParentRoute: () => protectedAdminRouteRoute,
+} as any)
+const protectedAdminSettingsRoute = protectedAdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => protectedAdminRouteRoute,
+} as any)
+const protectedAdminSupportRoute = protectedAdminSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => protectedAdminRouteRoute,
+} as any)
+const protectedAdminTransfersRoute = protectedAdminTransfersRouteImport.update({
+  id: '/transfers',
+  path: '/transfers',
+  getParentRoute: () => protectedAdminRouteRoute,
+} as any)
+const publicBlogIndexRoute = publicBlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicBlogSlugRoute = publicBlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicExperiencesIndexRoute = publicExperiencesIndexRouteImport.update({
+  id: '/experiences/',
+  path: '/experiences/',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicExperiencesSlugRoute = publicExperiencesSlugRouteImport.update({
+  id: '/experiences/$slug',
+  path: '/experiences/$slug',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicPayInvoiceIdRoute = publicPayInvoiceIdRouteImport.update({
+  id: '/pay/$invoiceId',
+  path: '/pay/$invoiceId',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicProposalsInquiryIdRoute =
+  publicProposalsInquiryIdRouteImport.update({
+    id: '/proposals/$inquiryId',
+    path: '/proposals/$inquiryId',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -272,6 +277,7 @@ export interface FileRoutesById {
   '/(protected)': typeof protectedRouteRouteWithChildren
   '/(public)': typeof publicRouteRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/(protected)/(customer)': typeof protectedcustomerRouteRouteWithChildren
   '/(protected)/admin': typeof protectedAdminRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/signup': typeof authSignupRoute
@@ -371,6 +377,7 @@ export interface FileRouteTypes {
     | '/(protected)'
     | '/(public)'
     | '/sitemap.xml'
+    | '/(protected)/(customer)'
     | '/(protected)/admin'
     | '/(auth)/login'
     | '/(auth)/signup'
@@ -413,11 +420,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
+    '/(protected)': {
+      id: '/(protected)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof protectedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(public)': {
@@ -427,81 +434,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof publicRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(protected)': {
-      id: '/(protected)'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof protectedRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(public)/': {
-      id: '/(public)/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof publicIndexRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/admin-auth/login': {
-      id: '/admin-auth/login'
-      path: '/admin-auth/login'
-      fullPath: '/admin-auth/login'
-      preLoaderRoute: typeof AdminAuthLoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(public)/why-uniquey': {
-      id: '/(public)/why-uniquey'
-      path: '/why-uniquey'
-      fullPath: '/why-uniquey'
-      preLoaderRoute: typeof publicWhyUniqueyRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/testimonials': {
-      id: '/(public)/testimonials'
-      path: '/testimonials'
-      fullPath: '/testimonials'
-      preLoaderRoute: typeof publicTestimonialsRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/plan-my-stay': {
-      id: '/(public)/plan-my-stay'
-      path: '/plan-my-stay'
-      fullPath: '/plan-my-stay'
-      preLoaderRoute: typeof publicPlanMyStayRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/how-it-works': {
-      id: '/(public)/how-it-works'
-      path: '/how-it-works'
-      fullPath: '/how-it-works'
-      preLoaderRoute: typeof publicHowItWorksRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/faq': {
-      id: '/(public)/faq'
-      path: '/faq'
-      fullPath: '/faq'
-      preLoaderRoute: typeof publicFaqRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/contact': {
-      id: '/(public)/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof publicContactRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/about': {
-      id: '/(public)/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof publicAboutRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(auth)/signup': {
-      id: '/(auth)/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof authSignupRouteImport
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(auth)/login': {
@@ -511,6 +448,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(auth)/signup': {
+      id: '/(auth)/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof authSignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(protected)/(customer)': {
+      id: '/(protected)/(customer)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof protectedcustomerRouteRouteImport
+      parentRoute: typeof protectedRouteRoute
+    }
     '/(protected)/admin': {
       id: '/(protected)/admin'
       path: '/admin'
@@ -518,109 +469,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof protectedAdminRouteRouteImport
       parentRoute: typeof protectedRouteRoute
     }
-    '/(public)/experiences/': {
-      id: '/(public)/experiences/'
-      path: '/experiences'
-      fullPath: '/experiences/'
-      preLoaderRoute: typeof publicExperiencesIndexRouteImport
+    '/(public)/': {
+      id: '/(public)/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof publicIndexRouteImport
       parentRoute: typeof publicRouteRoute
     }
-    '/(public)/blog/': {
-      id: '/(public)/blog/'
-      path: '/blog'
-      fullPath: '/blog/'
-      preLoaderRoute: typeof publicBlogIndexRouteImport
+    '/(public)/about': {
+      id: '/(public)/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof publicAboutRouteImport
       parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/contact': {
+      id: '/(public)/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof publicContactRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/faq': {
+      id: '/(public)/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof publicFaqRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/how-it-works': {
+      id: '/(public)/how-it-works'
+      path: '/how-it-works'
+      fullPath: '/how-it-works'
+      preLoaderRoute: typeof publicHowItWorksRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/plan-my-stay': {
+      id: '/(public)/plan-my-stay'
+      path: '/plan-my-stay'
+      fullPath: '/plan-my-stay'
+      preLoaderRoute: typeof publicPlanMyStayRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/testimonials': {
+      id: '/(public)/testimonials'
+      path: '/testimonials'
+      fullPath: '/testimonials'
+      preLoaderRoute: typeof publicTestimonialsRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/why-uniquey': {
+      id: '/(public)/why-uniquey'
+      path: '/why-uniquey'
+      fullPath: '/why-uniquey'
+      preLoaderRoute: typeof publicWhyUniqueyRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/admin-auth/login': {
+      id: '/admin-auth/login'
+      path: '/admin-auth/login'
+      fullPath: '/admin-auth/login'
+      preLoaderRoute: typeof AdminAuthLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(protected)/(customer)/portal': {
+      id: '/(protected)/(customer)/portal'
+      path: '/portal'
+      fullPath: '/portal'
+      preLoaderRoute: typeof protectedcustomerPortalRouteImport
+      parentRoute: typeof protectedcustomerRouteRoute
     }
     '/(protected)/admin/': {
       id: '/(protected)/admin/'
       path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof protectedAdminIndexRouteImport
-      parentRoute: typeof protectedAdminRouteRoute
-    }
-    '/(public)/proposals/$inquiryId': {
-      id: '/(public)/proposals/$inquiryId'
-      path: '/proposals/$inquiryId'
-      fullPath: '/proposals/$inquiryId'
-      preLoaderRoute: typeof publicProposalsInquiryIdRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/pay/$invoiceId': {
-      id: '/(public)/pay/$invoiceId'
-      path: '/pay/$invoiceId'
-      fullPath: '/pay/$invoiceId'
-      preLoaderRoute: typeof publicPayInvoiceIdRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/experiences/$slug': {
-      id: '/(public)/experiences/$slug'
-      path: '/experiences/$slug'
-      fullPath: '/experiences/$slug'
-      preLoaderRoute: typeof publicExperiencesSlugRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/blog/$slug': {
-      id: '/(public)/blog/$slug'
-      path: '/blog/$slug'
-      fullPath: '/blog/$slug'
-      preLoaderRoute: typeof publicBlogSlugRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(protected)/admin/transfers': {
-      id: '/(protected)/admin/transfers'
-      path: '/transfers'
-      fullPath: '/admin/transfers'
-      preLoaderRoute: typeof protectedAdminTransfersRouteImport
-      parentRoute: typeof protectedAdminRouteRoute
-    }
-    '/(protected)/admin/support': {
-      id: '/(protected)/admin/support'
-      path: '/support'
-      fullPath: '/admin/support'
-      preLoaderRoute: typeof protectedAdminSupportRouteImport
-      parentRoute: typeof protectedAdminRouteRoute
-    }
-    '/(protected)/admin/settings': {
-      id: '/(protected)/admin/settings'
-      path: '/settings'
-      fullPath: '/admin/settings'
-      preLoaderRoute: typeof protectedAdminSettingsRouteImport
-      parentRoute: typeof protectedAdminRouteRoute
-    }
-    '/(protected)/admin/invoices': {
-      id: '/(protected)/admin/invoices'
-      path: '/invoices'
-      fullPath: '/admin/invoices'
-      preLoaderRoute: typeof protectedAdminInvoicesRouteImport
-      parentRoute: typeof protectedAdminRouteRoute
-    }
-    '/(protected)/admin/inquiries': {
-      id: '/(protected)/admin/inquiries'
-      path: '/inquiries'
-      fullPath: '/admin/inquiries'
-      preLoaderRoute: typeof protectedAdminInquiriesRouteImport
-      parentRoute: typeof protectedAdminRouteRoute
-    }
-    '/(protected)/admin/guests': {
-      id: '/(protected)/admin/guests'
-      path: '/guests'
-      fullPath: '/admin/guests'
-      preLoaderRoute: typeof protectedAdminGuestsRouteImport
-      parentRoute: typeof protectedAdminRouteRoute
-    }
-    '/(protected)/admin/experiences': {
-      id: '/(protected)/admin/experiences'
-      path: '/experiences'
-      fullPath: '/admin/experiences'
-      preLoaderRoute: typeof protectedAdminExperiencesRouteImport
-      parentRoute: typeof protectedAdminRouteRoute
-    }
-    '/(protected)/admin/calendar': {
-      id: '/(protected)/admin/calendar'
-      path: '/calendar'
-      fullPath: '/admin/calendar'
-      preLoaderRoute: typeof protectedAdminCalendarRouteImport
       parentRoute: typeof protectedAdminRouteRoute
     }
     '/(protected)/admin/apartments': {
@@ -630,15 +553,120 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof protectedAdminApartmentsRouteImport
       parentRoute: typeof protectedAdminRouteRoute
     }
-    '/(protected)/(customer)/portal': {
-      id: '/(protected)/(customer)/portal'
-      path: '/portal'
-      fullPath: '/portal'
-      preLoaderRoute: typeof protectedcustomerPortalRouteImport
-      parentRoute: typeof protectedRouteRoute
+    '/(protected)/admin/calendar': {
+      id: '/(protected)/admin/calendar'
+      path: '/calendar'
+      fullPath: '/admin/calendar'
+      preLoaderRoute: typeof protectedAdminCalendarRouteImport
+      parentRoute: typeof protectedAdminRouteRoute
+    }
+    '/(protected)/admin/experiences': {
+      id: '/(protected)/admin/experiences'
+      path: '/experiences'
+      fullPath: '/admin/experiences'
+      preLoaderRoute: typeof protectedAdminExperiencesRouteImport
+      parentRoute: typeof protectedAdminRouteRoute
+    }
+    '/(protected)/admin/guests': {
+      id: '/(protected)/admin/guests'
+      path: '/guests'
+      fullPath: '/admin/guests'
+      preLoaderRoute: typeof protectedAdminGuestsRouteImport
+      parentRoute: typeof protectedAdminRouteRoute
+    }
+    '/(protected)/admin/inquiries': {
+      id: '/(protected)/admin/inquiries'
+      path: '/inquiries'
+      fullPath: '/admin/inquiries'
+      preLoaderRoute: typeof protectedAdminInquiriesRouteImport
+      parentRoute: typeof protectedAdminRouteRoute
+    }
+    '/(protected)/admin/invoices': {
+      id: '/(protected)/admin/invoices'
+      path: '/invoices'
+      fullPath: '/admin/invoices'
+      preLoaderRoute: typeof protectedAdminInvoicesRouteImport
+      parentRoute: typeof protectedAdminRouteRoute
+    }
+    '/(protected)/admin/settings': {
+      id: '/(protected)/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof protectedAdminSettingsRouteImport
+      parentRoute: typeof protectedAdminRouteRoute
+    }
+    '/(protected)/admin/support': {
+      id: '/(protected)/admin/support'
+      path: '/support'
+      fullPath: '/admin/support'
+      preLoaderRoute: typeof protectedAdminSupportRouteImport
+      parentRoute: typeof protectedAdminRouteRoute
+    }
+    '/(protected)/admin/transfers': {
+      id: '/(protected)/admin/transfers'
+      path: '/transfers'
+      fullPath: '/admin/transfers'
+      preLoaderRoute: typeof protectedAdminTransfersRouteImport
+      parentRoute: typeof protectedAdminRouteRoute
+    }
+    '/(public)/blog/': {
+      id: '/(public)/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof publicBlogIndexRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/blog/$slug': {
+      id: '/(public)/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof publicBlogSlugRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/experiences/': {
+      id: '/(public)/experiences/'
+      path: '/experiences'
+      fullPath: '/experiences/'
+      preLoaderRoute: typeof publicExperiencesIndexRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/experiences/$slug': {
+      id: '/(public)/experiences/$slug'
+      path: '/experiences/$slug'
+      fullPath: '/experiences/$slug'
+      preLoaderRoute: typeof publicExperiencesSlugRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/pay/$invoiceId': {
+      id: '/(public)/pay/$invoiceId'
+      path: '/pay/$invoiceId'
+      fullPath: '/pay/$invoiceId'
+      preLoaderRoute: typeof publicPayInvoiceIdRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/proposals/$inquiryId': {
+      id: '/(public)/proposals/$inquiryId'
+      path: '/proposals/$inquiryId'
+      fullPath: '/proposals/$inquiryId'
+      preLoaderRoute: typeof publicProposalsInquiryIdRouteImport
+      parentRoute: typeof publicRouteRoute
     }
   }
 }
+
+interface protectedcustomerRouteRouteChildren {
+  protectedcustomerPortalRoute: typeof protectedcustomerPortalRoute
+}
+
+const protectedcustomerRouteRouteChildren: protectedcustomerRouteRouteChildren =
+  {
+    protectedcustomerPortalRoute: protectedcustomerPortalRoute,
+  }
+
+const protectedcustomerRouteRouteWithChildren =
+  protectedcustomerRouteRoute._addFileChildren(
+    protectedcustomerRouteRouteChildren,
+  )
 
 interface protectedAdminRouteRouteChildren {
   protectedAdminApartmentsRoute: typeof protectedAdminApartmentsRoute
@@ -670,13 +698,13 @@ const protectedAdminRouteRouteWithChildren =
   protectedAdminRouteRoute._addFileChildren(protectedAdminRouteRouteChildren)
 
 interface protectedRouteRouteChildren {
+  protectedcustomerRouteRoute: typeof protectedcustomerRouteRouteWithChildren
   protectedAdminRouteRoute: typeof protectedAdminRouteRouteWithChildren
-  protectedcustomerPortalRoute: typeof protectedcustomerPortalRoute
 }
 
 const protectedRouteRouteChildren: protectedRouteRouteChildren = {
+  protectedcustomerRouteRoute: protectedcustomerRouteRouteWithChildren,
   protectedAdminRouteRoute: protectedAdminRouteRouteWithChildren,
-  protectedcustomerPortalRoute: protectedcustomerPortalRoute,
 }
 
 const protectedRouteRouteWithChildren = protectedRouteRoute._addFileChildren(
