@@ -218,7 +218,7 @@ else:
     EMAIL_USE_TLS = True
     EMAIL_HOST_USER = 'resend' # For Resend, the username is literally the word 'resend'
     EMAIL_HOST_PASSWORD = env('RESEND_API_KEY')
-    DEFAULT_FROM_EMAIL = 'concierge@yourdomain.com' # Must be your verified Resend domain
+    DEFAULT_FROM_EMAIL = 'hello@uniqueytravels.com' # Must be your verified Resend domain
 
 # Tell Django to use Supabase (S3) for media, but keep Whitenoise for static files (CSS/JS)
 STORAGES = {
