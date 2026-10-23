@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Instagram, Linkedin, Facebook, MessageCircle, Mail, Phone } from "lucide-react";
+import { Instagram, Linkedin, Facebook, MessageCircle, Mail, MapPin, Phone } from "lucide-react";
 
 export function SiteFooter() {
   return (
@@ -49,7 +49,7 @@ export function SiteFooter() {
           </h4>
           <ul className="space-y-3 text-sm">
             <li className="flex items-center gap-2">
-              <Phone className="h-4 w-4" /> +254 746148654
+              <Phone className="h-4 w-4" /> +254721529527
             </li>
             <li className="flex items-center gap-2">
               <MessageCircle className="h-4 w-4" /> WhatsApp 24/7
@@ -57,7 +57,9 @@ export function SiteFooter() {
             <li className="flex items-center gap-2">
               <Mail className="h-4 w-4" /> concierge@uniqueytravels.com
             </li>
-
+            <li className="flex items-center gap-2">
+              <MapPin className="h-4 w-4" /> Pangani opposite Hashgrill Restaurant
+            </li>
           </ul>
         </div>
 

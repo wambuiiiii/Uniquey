@@ -65,12 +65,17 @@ function AdminLoginPage() {
     } catch (err: any) {
       clearTokens();
       const status = err.response?.status;
+      const serverMessage = err.response?.data?.detail || err.response?.data?.non_field_errors?.[0];
+
       if (!err.response) {
         setError("Can't reach the server. Check your internet connection and try again.");
+      } else if (serverMessage) {
+        // Displays exact message from Django backend (e.g., "No active account found with the given credentials")
+        setError(serverMessage);
       } else if (status === 401) {
         setError("Incorrect email or password.");
       } else if (status === 400) {
-        setError("Please enter a valid email and password.");
+        setError("Please check your input and try again.");
       } else if (status === 429) {
         setError("Too many attempts. Please wait a few minutes and try again.");
       } else if (status >= 500) {
@@ -78,10 +83,7 @@ function AdminLoginPage() {
       } else {
         setError("Sign in failed. Please try again.");
       }
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    }};
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
