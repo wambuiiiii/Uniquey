@@ -238,6 +238,7 @@ function AdminInvoices() {
   const sendInvoiceWhatsApp = async (inv: Invoice) => {
     const cleanPhone = formatWhatsAppNumber(inv.guest_phone || "");
 
+    // Only auto-update status to SENT if it was previously a DRAFT
     if (inv.status === "DRAFT" && inv.id) {
       try {
         const res = await axiosInstance.patch(`invoices/${inv.id}/`, { status: "SENT" });
@@ -249,7 +250,15 @@ function AdminInvoices() {
     }
 
     const link = `${window.location.origin}/pay/${inv.id}`;
-    const msg = encodeURIComponent(`Hello ${inv.guest_name},\n\nYour UNIQUEY accommodation invoice (${inv.invoice_number}) is ready! To secure your reservation, please view your breakdown and securely pay your 30% deposit here:\n\n${link}`);
+    let msg = "";
+
+    // Dynamic WhatsApp message based on payment state
+    if (inv.status === "DEPOSIT_PAID") {
+      msg = encodeURIComponent(`Hello ${inv.guest_name},\n\nThank you for your deposit! Your UNIQUEY reservation is secured. When you are ready, you can pay your remaining balance safely here:\n\n${link}`);
+    } else {
+      msg = encodeURIComponent(`Hello ${inv.guest_name},\n\nYour UNIQUEY accommodation invoice (${inv.invoice_number}) is ready! To secure your reservation, please view your breakdown and securely pay your 30% deposit here:\n\n${link}`);
+    }
+
     window.open(`https://wa.me/${cleanPhone}?text=${msg}`, "_blank");
   };
 
@@ -283,68 +292,103 @@ function AdminInvoices() {
         <div className="py-12 text-center text-muted-foreground border rounded-lg bg-muted/20">No invoices generated yet.</div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {filtered.map((inv) => (
-            <Card key={inv.id} className="border-border/60 overflow-hidden flex flex-col">
-              <CardContent className="space-y-4 p-5 flex flex-col flex-1">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <p className="font-serif text-lg text-foreground flex items-center gap-1.5">
-                      <FileText className="h-4 w-4 text-primary" /> {inv.invoice_number}
-                    </p>
-                    <p className="text-xs text-muted-foreground">{inv.guest_name || inv.guest_email}</p>
-                  </div>
-                  <Badge variant="outline" className={inv.status === "DEPOSIT_PAID" || inv.status === "PAID" ? "bg-forest/15 text-forest border-forest/30" : "bg-muted text-muted-foreground"}>
-                    {inv.status_display || inv.status}
-                  </Badge>
-                </div>
+          {filtered.map((inv) => {
+            // Dynamic State Logic
+            const isFullyPaid = inv.status === "PAID";
+            const isDepositPaid = inv.status === "DEPOSIT_PAID";
+            const isLocked = isFullyPaid || isDepositPaid;
 
-                <div className="space-y-1.5 bg-muted/30 p-3 rounded-lg text-sm border">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Stay Total:</span>
-                    <span>{inv.currency} {Number(inv.accommodation_total || 0).toLocaleString()}</span>
-                  </div>
-                  {Number(inv.additional_fees) > 0 && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Additional Fees:</span>
-                      <span>{inv.currency} {Number(inv.additional_fees).toLocaleString()}</span>
+            // Calculate exact dynamic balances overriding backend staleness
+            let amountPaid = 0;
+            if (isFullyPaid) amountPaid = Number(inv.grand_total || 0);
+            else if (isDepositPaid) amountPaid = Number(inv.deposit_required || 0);
+
+            const depositDue = isLocked ? 0 : Number(inv.deposit_required || 0);
+            const balanceDue = Number(inv.grand_total || 0) - amountPaid;
+
+            return (
+              <Card key={inv.id} className="border-border/60 overflow-hidden flex flex-col">
+                <CardContent className="space-y-4 p-5 flex flex-col flex-1">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <p className="font-serif text-lg text-foreground flex items-center gap-1.5">
+                        <FileText className="h-4 w-4 text-primary" /> {inv.invoice_number}
+                      </p>
+                      <p className="text-xs text-muted-foreground">{inv.guest_name || inv.guest_email}</p>
                     </div>
-                  )}
-                  <div className="flex justify-between pt-2 border-t border-border/60">
-                    <span className="text-muted-foreground">Grand Total:</span>
-                    <span className="font-semibold text-foreground">{inv.currency} {Number(inv.grand_total || 0).toLocaleString()}</span>
+                    <Badge variant="outline" className={isLocked ? "bg-forest/15 text-forest border-forest/30" : "bg-muted text-muted-foreground"}>
+                      {inv.status_display || inv.status}
+                    </Badge>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Deposit Due (30%):</span>
-                    <span className="font-semibold text-primary">{inv.currency} {Number(inv.deposit_required || 0).toLocaleString()}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Balance Remaining:</span>
-                    <span className="font-medium text-foreground">{inv.currency} {Number(inv.balance_due || 0).toLocaleString()}</span>
-                  </div>
-                  <div className="flex justify-between text-xs pt-2 border-t border-border/60">
-                    <span className="text-muted-foreground">Deposit Due By:</span>
-                    <span>{format(new Date(inv.due_date), "MMM d, yyyy")}</span>
-                  </div>
-                </div>
 
-                <div className="flex gap-2 pt-2 mt-auto">
-                  <Button variant="hero" size="sm" className="flex-1" onClick={() => setPreviewInv(inv)}>
-                    <Send className="mr-1.5 h-3.5 w-3.5" /> Preview & Send
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => handleOpenEdit(inv)}>
-                    <Pencil className="mr-1.5 h-3.5 w-3.5" /> Edit
-                  </Button>
-                  <Button size="sm" variant="ghost" className="text-destructive hover:bg-destructive/10" onClick={() => inv.id && handleDelete(inv.id)}>
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                  <div className="space-y-1.5 bg-muted/30 p-3 rounded-lg text-sm border">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Stay Total:</span>
+                      <span>{inv.currency} {Number(inv.accommodation_total || 0).toLocaleString()}</span>
+                    </div>
+                    {Number(inv.additional_fees) > 0 && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Additional Fees:</span>
+                        <span>{inv.currency} {Number(inv.additional_fees).toLocaleString()}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between pt-2 border-t border-border/60">
+                      <span className="text-muted-foreground">Grand Total:</span>
+                      <span className="font-semibold text-foreground">{inv.currency} {Number(inv.grand_total || 0).toLocaleString()}</span>
+                    </div>
+
+                    {/* DYNAMIC DEPOSIT DISPLAY */}
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Deposit Due (30%):</span>
+                      <span className={isLocked ? "text-muted-foreground" : "font-semibold text-primary"}>
+                        {isLocked ? "Paid" : `${inv.currency} ${depositDue.toLocaleString()}`}
+                      </span>
+                    </div>
+
+                    {/* DYNAMIC BALANCE DISPLAY */}
+                    <div className="flex justify-between">
+                      <span className={isDepositPaid ? "font-medium text-foreground" : "text-muted-foreground"}>Balance Remaining:</span>
+                      <span className={`font-medium ${isDepositPaid ? "text-primary text-base" : "text-foreground"}`}>
+                        {isFullyPaid ? "Paid in Full" : `${inv.currency} ${balanceDue.toLocaleString()}`}
+                      </span>
+                    </div>
+
+                    {!isLocked && (
+                      <div className="flex justify-between text-xs pt-2 border-t border-border/60">
+                        <span className="text-muted-foreground">Deposit Due By:</span>
+                        <span>{format(new Date(inv.due_date), "MMM d, yyyy")}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex gap-2 pt-2 mt-auto">
+                    {/* HIDE EDIT & SEND IF PAID */}
+                    {!isLocked ? (
+                      <>
+                        <Button variant="hero" size="sm" className="flex-1" onClick={() => setPreviewInv(inv)}>
+                          <Send className="mr-1.5 h-3.5 w-3.5" /> Preview & Send
+                        </Button>
+                        <Button size="sm" variant="outline" onClick={() => handleOpenEdit(inv)}>
+                          <Pencil className="mr-1.5 h-3.5 w-3.5" /> Edit
+                        </Button>
+                      </>
+                    ) : (
+                      <Button variant="outline" size="sm" className="flex-1" onClick={() => setPreviewInv(inv)}>
+                        <Receipt className="mr-1.5 h-3.5 w-3.5" /> View Receipt
+                      </Button>
+                    )}
+                    <Button size="sm" variant="ghost" className="text-destructive hover:bg-destructive/10" onClick={() => inv.id && handleDelete(inv.id)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       )}
 
-      {/* EDITOR MODAL */}
+      {/* EDITOR MODAL ... */}
       <Dialog open={open} onOpenChange={(isOpen) => !isOpen && handleCloseModal()}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
@@ -447,61 +491,92 @@ function AdminInvoices() {
         </DialogContent>
       </Dialog>
 
-      {/* CLIENT PREVIEW & SEND MODAL */}
+      {/* CLIENT PREVIEW & RECEIPT MODAL */}
       <Dialog open={!!previewInv} onOpenChange={(o) => !o && setPreviewInv(null)}>
         <DialogContent className="max-w-md bg-muted/30 p-4">
           <DialogHeader className="text-center pb-0">
             <div className="mx-auto bg-white p-2.5 rounded-full shadow-sm w-fit mb-2"><Receipt className="h-5 w-5 text-primary" /></div>
-            <DialogTitle className="font-serif text-xl">Invoice {previewInv?.invoice_number}</DialogTitle>
+            <DialogTitle className="font-serif text-xl">
+              {previewInv?.status === "PAID" ? "Receipt" : "Invoice"} {previewInv?.invoice_number}
+            </DialogTitle>
             <DialogDescription className="text-xs">Billed to: <span className="text-foreground font-medium">{previewInv?.guest_name || previewInv?.guest_email}</span></DialogDescription>
           </DialogHeader>
 
-          {previewInv && (
-            <div className="bg-white rounded-xl shadow-sm border p-5 space-y-4">
-              <div>
-                <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Trip Summary</p>
-                <div className="flex justify-between text-sm mb-1.5">
-                  <span className="text-muted-foreground">Accommodation</span>
-                  <span className="font-medium text-foreground">{previewInv.currency} {Number(previewInv.accommodation_total).toLocaleString()}</span>
-                </div>
-                {Number(previewInv.additional_fees) > 0 && (
+          {previewInv && (() => {
+            const isPreviewFullyPaid = previewInv.status === "PAID";
+            const isPreviewDepositPaid = previewInv.status === "DEPOSIT_PAID";
+
+            let previewAmountPaid = 0;
+            if (isPreviewFullyPaid) previewAmountPaid = Number(previewInv.grand_total || 0);
+            else if (isPreviewDepositPaid) previewAmountPaid = Number(previewInv.deposit_required || 0);
+
+            const previewBalanceDue = Number(previewInv.grand_total || 0) - previewAmountPaid;
+
+            return (
+              <div className="bg-white rounded-xl shadow-sm border p-5 space-y-4">
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Trip Summary</p>
                   <div className="flex justify-between text-sm mb-1.5">
-                    <span className="text-muted-foreground">Additional Services</span>
-                    <span className="font-medium text-foreground">{previewInv.currency} {Number(previewInv.additional_fees).toLocaleString()}</span>
+                    <span className="text-muted-foreground">Accommodation</span>
+                    <span className="font-medium text-foreground">{previewInv.currency} {Number(previewInv.accommodation_total).toLocaleString()}</span>
+                  </div>
+                  {Number(previewInv.additional_fees) > 0 && (
+                    <div className="flex justify-between text-sm mb-1.5">
+                      <span className="text-muted-foreground">Additional Services</span>
+                      <span className="font-medium text-foreground">{previewInv.currency} {Number(previewInv.additional_fees).toLocaleString()}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between text-sm pt-2 border-t">
+                    <span className="font-semibold text-foreground">Grand Total</span>
+                    <span className="font-semibold text-foreground">{previewInv.currency} {Number(previewInv.grand_total).toLocaleString()}</span>
+                  </div>
+                </div>
+
+                {isPreviewFullyPaid ? (
+                  <div className="bg-forest/10 border border-forest/20 rounded-lg p-3 text-center">
+                    <p className="text-[10px] font-semibold uppercase tracking-widest text-forest mb-0.5">Status</p>
+                    <p className="text-2xl font-serif text-forest mb-0.5">Fully Paid</p>
+                  </div>
+                ) : (
+                  <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 text-center">
+                    <p className="text-[10px] font-semibold uppercase tracking-widest text-primary mb-0.5">
+                      {isPreviewDepositPaid ? "Balance Due Now" : "Deposit Due Now"}
+                    </p>
+                    <p className="text-2xl font-serif text-foreground mb-0.5">
+                      {previewInv.currency} {isPreviewDepositPaid ? previewBalanceDue.toLocaleString() : Number(previewInv.deposit_required).toLocaleString()}
+                    </p>
+                    <p className="text-xs text-muted-foreground">Due by {format(new Date(previewInv.due_date), "MMM d, yyyy")}</p>
                   </div>
                 )}
-                <div className="flex justify-between text-sm pt-2 border-t">
-                  <span className="font-semibold text-foreground">Grand Total</span>
-                  <span className="font-semibold text-foreground">{previewInv.currency} {Number(previewInv.grand_total).toLocaleString()}</span>
+
+                <div className="pt-2 border-t space-y-2">
+                  {!isPreviewFullyPaid && (
+                    <p className="text-center text-xs text-muted-foreground mb-2">
+                      Remaining balance of {previewInv.currency} {previewBalanceDue.toLocaleString()} due before arrival.
+                    </p>
+                  )}
+
+                  {!isPreviewFullyPaid && (
+                    <a
+                      href={`${window.location.origin}/pay/${previewInv.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block w-full"
+                    >
+                      <Button className="w-full bg-[#1db954] hover:bg-[#1aa34a] text-white h-10 text-sm shadow-md">
+                        <Smartphone className="mr-2 h-4 w-4" /> Open Payment Link
+                      </Button>
+                    </a>
+                  )}
+
+                  <Button variant="outline" className="w-full h-10 text-sm" onClick={() => sendInvoiceWhatsApp(previewInv)}>
+                    <MessageSquare className="mr-2 h-4 w-4" />
+                    {isPreviewFullyPaid ? "Send Receipt via WhatsApp" : "Send to Guest via WhatsApp"}
+                  </Button>
                 </div>
               </div>
-
-              <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 text-center">
-                <p className="text-[10px] font-semibold uppercase tracking-widest text-primary mb-0.5">Amount Due Now</p>
-                <p className="text-2xl font-serif text-foreground mb-0.5">{previewInv.currency} {Number(previewInv.deposit_required).toLocaleString()}</p>
-                <p className="text-xs text-muted-foreground">Due by {format(new Date(previewInv.due_date), "MMM d, yyyy")}</p>
-              </div>
-
-              <div className="pt-2 border-t space-y-2">
-                <p className="text-center text-xs text-muted-foreground mb-1">Remaining balance of {previewInv.currency} {Number(previewInv.balance_due || 0).toLocaleString()} due before arrival.</p>
-
-                <a
-                  href={`${window.location.origin}/pay/${previewInv.id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block w-full"
-                >
-                  <Button className="w-full bg-[#1db954] hover:bg-[#1aa34a] text-white h-10 text-sm shadow-md">
-                    <Smartphone className="mr-2 h-4 w-4" /> Open Payment Link
-                  </Button>
-                </a>
-
-                <Button variant="outline" className="w-full h-10 text-sm" onClick={() => sendInvoiceWhatsApp(previewInv)}>
-                  <MessageSquare className="mr-2 h-4 w-4" /> Send to Guest via WhatsApp
-                </Button>
-              </div>
-            </div>
-          )}
+            );
+          })()}
         </DialogContent>
       </Dialog>
     </div>
