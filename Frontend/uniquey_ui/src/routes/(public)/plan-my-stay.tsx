@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/select";
 import axios from "axios";// Fallback experiences array just in case the import fails or is empty
 import { experiences } from "@/lib/experiences";
-
+import axiosInstance from "@/api/axios.ts";
 export const Route = createFileRoute("/(public)/plan-my-stay")({
   head: () => ({
     meta: [
@@ -114,7 +114,8 @@ function PlanMyStay() {
       };
 
       // 6. Send to Django!
-        await axios.post("http://127.0.0.1:8000/api/v1/inquiries/", payload);
+        await axiosInstance.post("inquiries/", payload);
+  setSubmitted(true);
         setSubmitted(true);
     } catch (err: any) {
       console.error("Submission failed:", err.response?.data || err);

@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,27 @@ const nav = [
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const { isAuthenticated, logout } = useAuth();
+
+  const navigate = useNavigate();
+  const router = useRouter();
+
+  // Secure Logout Handler
+  const handleLogout = async () => {
+    // 1. Wipe tokens and update Auth Context
+    logout();
+
+    // 2. Invalidate router cache so protected routes instantly lock
+    await router.invalidate();
+
+    // 3. Kick the user to the public homepage
+    navigate({ to: "/" });
+
+    // 4. Show feedback (If you have shadcn toast installed, use that here instead of alert)
+    alert("You have been securely signed out.");
+
+    // Close mobile menu if open
+    setOpen(false);
+  };
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur-md">
@@ -54,7 +75,7 @@ export function SiteHeader() {
                 variant="ghost"
                 size="sm"
                 className="hidden md:inline-flex text-muted-foreground hover:text-destructive"
-                onClick={logout}
+                onClick={handleLogout}
               >
                 Sign Out
               </Button>
@@ -115,7 +136,7 @@ export function SiteHeader() {
                 <Button
                   variant="ghost"
                   className="w-full justify-start px-3 text-muted-foreground hover:text-destructive"
-                  onClick={() => { logout(); setOpen(false); }}
+                  onClick={handleLogout}
                 >
                   Sign Out
                 </Button>

@@ -1,3 +1,5 @@
+import traceback
+
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
@@ -69,6 +71,7 @@ class InvoiceViewSet(viewsets.ModelViewSet):
                 )
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     @action(detail=True, methods=['post'], permission_classes=[AllowAny])
     def mpesa_callback(self, request, pk=None):
         """
@@ -76,27 +79,37 @@ class InvoiceViewSet(viewsets.ModelViewSet):
         """
         try:
             invoice = self.get_object()
-
             callback_data = request.data.get('Body', {}).get('stkCallback', {})
             result_code = callback_data.get('ResultCode')
 
             if str(result_code) == '0':
-                # Payment was successful! Process the status update.
+                # 1. Extract the actual amount paid and the M-Pesa Receipt Number
+                callback_items = callback_data.get('CallbackMetadata', {}).get('Item', [])
+                amount_paid = next((item['Value'] for item in callback_items if item['Name'] == 'Amount'),
+                                   invoice.deposit_required)
+                receipt_number = next(
+                    (item['Value'] for item in callback_items if item['Name'] == 'MpesaReceiptNumber'), 'Unknown')
+
+                # 2. Hand everything over to your perfectly designed InvoiceService
+                # This automatically updates the status, creates the user, and triggers the Celery email!
                 from .services import InvoiceService
-                InvoiceService.process_payment(invoice, invoice.deposit_required)
-                print(f"[M-Pesa] Payment successfully processed for Invoice {invoice.invoice_number}")
+                InvoiceService.process_payment(
+                    invoice=invoice,
+                    amount_paid=amount_paid,
+                    transaction_reference=receipt_number
+                )
+
+                print(f"[M-Pesa] Payment {receipt_number} successfully processed for {invoice.invoice_number}")
+
             else:
                 desc = callback_data.get('ResultDesc', 'Unknown Error')
                 print(f"[M-Pesa] Payment failed/cancelled for Invoice {invoice.invoice_number}: {desc}")
 
         except Exception as e:
-            # We MUST catch all errors here and print them to the terminal.
-            # If we let Django throw a 500, Safaricom will aggressively retry the webhook.
-            import traceback
             print("\n" + "=" * 50)
             print(f"🚨 [M-PESA CALLBACK CRASHED]: {str(e)}")
             traceback.print_exc()
             print("=" * 50 + "\n")
 
-        # Safaricom strictly requires this exact success payload immediately so they stop retrying
+        # Safaricom strictly requires this exact success payload instantly
         return Response({"ResultCode": 0, "ResultDesc": "Accepted"})

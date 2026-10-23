@@ -99,15 +99,6 @@ function ClientPaymentPage() {
     }
   };
 
-  // Optional Sandbox Fallback: Mimics Safaricom's success callback if the sandbox gets stuck
-  const handleManualConfirm = async () => {
-    try {
-      await axiosInstance.post(`invoices/${invoiceId}/mpesa_callback/`, { Body: { stkCallback: { ResultCode: 0 } } });
-    } catch (e) {
-      // Polling will catch the success regardless
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[color:var(--ivory)]">
@@ -124,7 +115,6 @@ function ClientPaymentPage() {
     );
   }
 
-// If the invoice is DEPOSIT_PAID, or if it's stuck in PAID but still owes money, it is past the deposit stage.
   const isDepositPaid = invoice.status === "DEPOSIT_PAID" || (invoice.status === "PAID" && Number(invoice.balance_due) > 0);
   const isFullyPaid = invoice.status === "PAID" && Number(invoice.balance_due) <= 0;
 
@@ -159,7 +149,6 @@ function ClientPaymentPage() {
   return (
     <div className="min-h-screen bg-[color:var(--ivory)] py-12 px-4 flex items-center justify-center">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl border overflow-hidden">
-
         <div className="bg-primary/5 p-6 text-center border-b">
           <div className="mx-auto bg-white p-3 rounded-full shadow-sm w-fit mb-3">
             <Receipt className="h-6 w-6 text-primary" />
@@ -205,13 +194,6 @@ function ClientPaymentPage() {
                 <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
                 <p className="text-sm font-medium">Please check your phone.</p>
                 <p className="text-xs text-muted-foreground">Enter your M-Pesa PIN on the prompt. Waiting for confirmation...</p>
-
-                <div className="pt-4 mt-2 border-t border-border/50">
-                  <p className="text-xs text-muted-foreground mb-3">Already entered your PIN?</p>
-                  <Button variant="outline" className="w-full" onClick={handleManualConfirm}>
-                    I have paid
-                  </Button>
-                </div>
               </div>
             ) : (
               <div className="space-y-3">

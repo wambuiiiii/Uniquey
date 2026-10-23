@@ -187,12 +187,17 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 # ==========================================
 # CELERY & REDIS CONFIGURATION
 # ==========================================
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
+# Use your Upstash Redis URL in Northflank, fallback to localhost for local testing
+REDIS_URL = env('REDIS_URL', default='redis://127.0.0.1:6379/0')
 
+CELERY_BROKER_URL = REDIS_URL
+CELERY_RESULT_BACKEND = REDIS_URL
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+
+# Add this so your callback URL can switch between Ngrok (local) and Northflank (production)
+BASE_API_URL = env('BASE_API_URL', default='https://api.uniqueytravels.com')
 
 # Dynamically inherits whatever your Django timezone is set to
 CELERY_TIMEZONE = TIME_ZONE

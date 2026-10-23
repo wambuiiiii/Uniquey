@@ -55,7 +55,7 @@ export function SiteFooter() {
               <MessageCircle className="h-4 w-4" /> WhatsApp 24/7
             </li>
             <li className="flex items-center gap-2">
-              <Mail className="h-4 w-4" /> concierge@uniqueytravels.com
+              <Mail className="h-4 w-4" /> hello@uniqueytravels.com
             </li>
             <li className="flex items-center gap-2">
               <MapPin className="h-4 w-4" /> Pangani opposite Hashgrill Restaurant

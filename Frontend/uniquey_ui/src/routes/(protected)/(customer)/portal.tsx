@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import {
   CheckCircle2,
@@ -24,6 +24,7 @@ import { Progress } from "@/components/ui/progress";
 import { SiteLayout } from "@/components/site-layout";
 import axiosInstance from "@/api/axios";
 import apartmentImg from "@/assets/experience-apartment.jpg";
+import { EmptyPortalState } from "@/components/portal/EmptyPortalState";
 
 export const Route = createFileRoute("/(protected)/(customer)/portal")({
   head: () => ({
@@ -56,7 +57,7 @@ interface PortalData {
     amenities: string[];
   } | null;
   invoice?: {
-      id: string;
+    id: string;
     invoice_number: string;
     currency: string;
     package_total: number | string;
@@ -121,23 +122,13 @@ function PortalDashboard() {
     );
   }
 
-  // Handle case where user logged in but has no active trip/inquiry
+  // Render the luxurious empty state if they have no active trips
   if (!data.has_active_trip) {
     return (
       <SiteLayout>
-        <section className="bg-[color:var(--ivory)] py-16">
-          <div className="container-wide max-w-2xl text-center">
-            <Card className="p-8">
-              <h1 className="font-serif text-3xl text-foreground">
-                Welcome, {data.first_name} 👋
-              </h1>
-              <p className="mt-2 text-muted-foreground">
-                You don't have an active trip booking yet. Explore our curated experiences to start planning your stay in Kenya.
-              </p>
-              <Button variant="hero" className="mt-6" asChild>
-                <Link to="/experiences">Explore Experiences</Link>
-              </Button>
-            </Card>
+        <section className="bg-[color:var(--ivory)] py-12 md:py-24">
+          <div className="container-wide">
+            <EmptyPortalState />
           </div>
         </section>
       </SiteLayout>
@@ -191,7 +182,6 @@ function PortalDashboard() {
              {balanceVal > 0 && (
                 <Button variant="hero" onClick={() => window.location.href = `/pay/${invoice?.id}`}>
                     <Receipt className="mr-1.5 h-4 w-4" /> Pay balance
-
                 </Button>
               )}
             </div>
@@ -290,7 +280,7 @@ function PortalDashboard() {
                       </p>
                       <ul className="mt-3 grid grid-cols-2 gap-1 text-xs text-muted-foreground">
                         {data.accommodation.amenities.map((item, idx) => (
-                          <li key={idx}>• {item}</li>
+                           <li key={idx}>{item}</li>
                         ))}
                       </ul>
                       <div className="mt-4 flex flex-wrap gap-2">
@@ -381,7 +371,7 @@ function PortalDashboard() {
                         strong
                       />
 
-{balanceVal > 0 && (
+                      {balanceVal > 0 && (
                         <div className="flex items-center justify-between rounded-lg border border-primary/30 bg-primary/5 p-4 mt-4">
                           <div>
                             <p className="text-sm font-medium text-foreground">
@@ -394,7 +384,6 @@ function PortalDashboard() {
                           <Button variant="hero" onClick={() => window.location.href = `/pay/${invoice.id}`}>
                               Pay {currencySymbol} {balanceVal.toLocaleString()}
                             </Button>
-
                         </div>
                       )}
                     </>
@@ -405,8 +394,6 @@ function PortalDashboard() {
 
             {/* Right column */}
             <div className="space-y-6">
-
-
               {/* Emergency */}
               <Card className="border-destructive/20">
                 <CardHeader>

@@ -46,8 +46,7 @@ class DarajaService:
         ngrok_url = getattr(settings, 'NGROK_URL', 'https://your-ngrok-domain.ngrok-free.app')
 
         # We pass the Invoice ID directly in the Callback URL so we know exactly who paid!
-        callback_url = f"{ngrok_url}/api/v1/invoices/{invoice.id}/mpesa_callback/"
-
+        callback_url = f"{settings.BASE_API_URL}/api/v1/invoices/{invoice.id}/mpesa_callback/"
         payload = {
             "BusinessShortCode": shortcode,
             "Password": password,
