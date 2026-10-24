@@ -60,7 +60,7 @@ function AdminOverview() {
   ];
 
   return (
-    <div className="space-y-8 p-4 sm:p-6 lg:p-8">
+    <div className="space-y-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-xs uppercase tracking-[0.25em] text-primary">Overview</p>

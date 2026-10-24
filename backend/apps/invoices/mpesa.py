@@ -1,4 +1,6 @@
 import base64
+import math
+
 import requests
 from datetime import datetime
 from django.conf import settings
@@ -22,44 +24,50 @@ class DarajaService:
         return r.json().get('access_token')
 
     @staticmethod
-    def trigger_stk_push(invoice, phone_number,amount_to_pay):
+    def trigger_stk_push(invoice, phone_number, amount_to_pay):
         access_token = DarajaService.get_access_token()
         api_url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
         headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
 
-        # Standard Daraja Sandbox Test Credentials
-        shortcode = "174379"
-        passkey = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919"
+        # Pull credentials securely from environment variables
+        shortcode = getattr(settings, 'MPESA_SHORTCODE', '174379')
+        passkey = getattr(settings, 'MPESA_PASSKEY', 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919')
         timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
 
         password_str = f"{shortcode}{passkey}{timestamp}"
         password = base64.b64encode(password_str.encode()).decode('utf-8')
 
-        # Safaricom sandbox works best with an amount of 1 KES
-        # SAFARICOM SANDBOX SAFETY NET
-        # Even though we received the real 'amount_to_pay', we force it to 1 KES
-        # so the sandbox doesn't crash during testing.
-        # When you go live, change this to: amount = int(float(amount_to_pay))
-        amount = 1
+        real_amount = math.ceil(float(amount_to_pay))
+        amount_to_send = 1  # Keep at 1 for Sandbox testing
 
-        # ⚠️ CRITICAL: Replace this with your NGROK URL while developing locally!
-        ngrok_url = getattr(settings, 'NGROK_URL', 'https://your-ngrok-domain.ngrok-free.app')
+        # Dynamically uses Ngrok locally, or Northflank in production
+        base_url = getattr(settings, 'BASE_API_URL', 'https://api.uniqueytravels.com').rstrip('/')
+        callback_url = f"{base_url}/api/v1/invoices/{invoice.id}/mpesa_callback/"
 
-        # We pass the Invoice ID directly in the Callback URL so we know exactly who paid!
-        callback_url = f"{settings.BASE_API_URL}/api/v1/invoices/{invoice.id}/mpesa_callback/"
         payload = {
             "BusinessShortCode": shortcode,
             "Password": password,
             "Timestamp": timestamp,
             "TransactionType": "CustomerPayBillOnline",
-            "Amount": amount,
+            "Amount": amount_to_send,
             "PartyA": phone_number,
             "PartyB": shortcode,
             "PhoneNumber": phone_number,
             "CallBackURL": callback_url,
-            "AccountReference": invoice.invoice_number,
-            "TransactionDesc": f"Deposit for {invoice.invoice_number}"
+            "AccountReference": str(invoice.invoice_number)[:12],
+            "TransactionDesc": "UNIQUEY Booking"
         }
 
-        response = requests.post(api_url, json=payload, headers=headers)
-        return response.json()
+        try:
+            response = requests.post(api_url, json=payload, headers=headers)
+            response_data = response.json()
+
+            print("\n=== DARAJA STK PUSH RESPONSE ===")
+            print(f"Callback URL Used: {callback_url}")
+            print(f"Daraja Response: {response_data}")
+            print("================================\n")
+
+            return response_data
+        except Exception as e:
+            print(f"CRITICAL DARAJA CRASH: {str(e)}")
+            return {"errorMessage": str(e)}

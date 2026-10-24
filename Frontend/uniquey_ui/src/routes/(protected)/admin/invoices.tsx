@@ -307,21 +307,22 @@ function AdminInvoices() {
             const balanceDue = Number(inv.grand_total || 0) - amountPaid;
 
             return (
-              <Card key={inv.id} className="border-border/60 bg-background overflow-hidden flex flex-col">
+              <Card key={inv.id} className="border-border bg-card shadow-card overflow-hidden flex flex-col">
                 <CardContent className="space-y-4 p-5 flex flex-col flex-1">
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <p className="font-serif text-lg font-semibold text-foreground flex items-center gap-1.5">
                         <FileText className="h-4 w-4 text-primary" /> {inv.invoice_number}
                       </p>
-                      <p className="text-sm text-foreground">{inv.guest_name || inv.guest_email}</p>
+                      <p className="mt-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">Billed to</p>
+                      <p className="text-sm font-medium text-foreground">{inv.guest_name || inv.guest_email}</p>
                     </div>
                     <Badge variant="outline" className={isLocked ? "bg-forest/15 text-forest border-forest/30" : "bg-muted text-muted-foreground"}>
                       {inv.status_display || inv.status}
                     </Badge>
                   </div>
 
-                  <div className="space-y-1.5 bg-background p-3 rounded-lg text-sm border">
+                  <div className="space-y-1.5 rounded-lg border border-border bg-muted p-3 text-sm">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Stay Total:</span>
                       <span>{inv.currency} {Number(inv.accommodation_total || 0).toLocaleString()}</span>

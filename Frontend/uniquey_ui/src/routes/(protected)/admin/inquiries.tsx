@@ -299,7 +299,7 @@ function InquiriesPage() {
   });
 
   return (
-    <div className="space-y-6 relative p-4 sm:p-6 lg:p-8">
+    <div className="relative space-y-6">
       {zoomedImg && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4" onClick={() => setZoomedImg(null)}>
           <button className="absolute top-6 right-6 text-white bg-black/50 p-2 rounded-full hover:bg-black/80"><X className="h-6 w-6" /></button>

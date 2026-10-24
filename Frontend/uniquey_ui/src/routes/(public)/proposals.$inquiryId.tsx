@@ -47,6 +47,12 @@ function ClientProposalPage() {
     }
   }, [inquiryId]);
 
+  useEffect(() => {
+    if (success) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [success]);
+
   const handleSelectProperty = async (recommendationId: string) => {
     setIsAccepting(recommendationId);
     try {
@@ -70,9 +76,9 @@ function ClientProposalPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[color:var(--ivory)] p-4 text-center">
-        <Card className="max-w-md p-8 shadow-xl">
-          <div className="mx-auto w-16 h-16 bg-forest/10 text-forest rounded-full flex items-center justify-center mb-4">
+      <div className="min-h-screen flex items-center justify-center bg-[color:var(--ivory)] px-4 py-6 text-center sm:p-8">
+        <Card className="w-full max-w-md p-5 shadow-xl sm:p-8 animate-in fade-in-0 slide-in-from-bottom-4 duration-500">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-forest/10 text-forest sm:h-16 sm:w-16">
             <CheckCircle2 className="w-8 h-8" />
           </div>
           <h1 className="font-serif text-3xl text-foreground mb-2">Apartment Selected</h1>
