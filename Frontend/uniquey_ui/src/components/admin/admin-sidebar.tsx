@@ -107,7 +107,7 @@ export function AdminSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link to="/admin/login" className="flex items-center gap-2 text-muted-foreground">
+              <Link to="/admin-auth/login" className="flex items-center gap-2 text-muted-foreground">
                 <LogOut className="h-4 w-4" />
                 <span>Sign out</span>
               </Link>

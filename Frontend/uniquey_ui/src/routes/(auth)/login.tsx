@@ -3,7 +3,6 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { Label } from "@/components/ui/label.tsx";
-import { Separator } from "@/components/ui/separator.tsx";
 
 import { useAuth } from "@/context/AuthContext";
 import axiosInstance from "@/api/axios";
@@ -169,18 +168,6 @@ const handleVerifyCode = async (e: React.FormEvent) => {
 
             <Button type="submit" variant="hero" className="w-full" disabled={isLoading}>
               {isLoading ? "Sending code..." : "Send code"}
-            </Button>
-
-            <div className="flex items-center gap-3">
-              <Separator className="flex-1" />
-              <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                or
-              </span>
-              <Separator className="flex-1" />
-            </div>
-
-            <Button type="button" variant="outline" className="w-full">
-              Continue with Google
             </Button>
           </form>
         ) : (

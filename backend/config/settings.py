@@ -188,14 +188,16 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 # CELERY & REDIS CONFIGURATION
 # ==========================================
 # Use your Upstash Redis URL in Northflank, fallback to localhost for local testing
-REDIS_URL = env('REDIS_URL', default='redis://127.0.0.1:6379/0')
+
+
+# Safely fetch the REDIS_URL from the OS environment directly
+REDIS_URL = os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379/0')
 
 CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = REDIS_URL
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
-
 # Add this so your callback URL can switch between Ngrok (local) and Northflank (production)
 BASE_API_URL = env('BASE_API_URL', default='https://api.uniqueytravels.com')
 

@@ -22,7 +22,6 @@ function ClientPaymentPage() {
   const [paymentStatus, setPaymentStatus] = useState<"idle" | "sent" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Tracks if a payment literally just completed while they were looking at the screen
   const [justPaidAmount, setJustPaidAmount] = useState<number | null>(null);
 
   const fetchInvoice = async () => {
@@ -43,7 +42,6 @@ function ClientPaymentPage() {
     if (invoiceId) fetchInvoice();
   }, [invoiceId]);
 
-  // Polling logic: constantly checks the backend while the M-Pesa prompt is on the guest's phone
   useEffect(() => {
     let interval: any;
     if (paymentStatus === "sent") {
@@ -51,14 +49,12 @@ function ClientPaymentPage() {
         try {
           const res = await axiosInstance.get(`invoices/${invoiceId}/`);
 
-          // SCENARIO 1: They were paying the Deposit
           if (invoice.status !== "DEPOSIT_PAID" && res.data.status === "DEPOSIT_PAID") {
             setJustPaidAmount(Number(invoice.deposit_required));
             setInvoice(res.data);
             setPaymentStatus("idle");
             clearInterval(interval);
           }
-          // SCENARIO 2: They were paying the Balance
           else if (invoice.status !== "PAID" && res.data.status === "PAID") {
             setJustPaidAmount(Number(invoice.balance_due));
             setInvoice(res.data);
@@ -77,7 +73,6 @@ function ClientPaymentPage() {
       return;
     }
 
-    // Clean and format the phone number strictly for Daraja
     let cleanPhone = phone.replace(/[^0-9]/g, "");
     if (cleanPhone.startsWith("0") && cleanPhone.length === 10) {
       cleanPhone = "254" + cleanPhone.substring(1);
@@ -138,8 +133,10 @@ function ClientPaymentPage() {
             {isFullyPaid ? "Trip Fully Paid!" : "Payment Received!"}
           </h1>
           <p className="text-muted-foreground">{successMsg}</p>
-          <Button className="mt-6" variant="hero" onClick={() => window.location.href = '/portal/login'}>
-            Continue to Portal
+
+          {/* FIX: Button text updated and hard redirect to /portal clears cache & triggers auth guards */}
+          <Button className="mt-6" variant="hero" onClick={() => window.location.href = '/portal'}>
+            View Trip
           </Button>
         </Card>
       </div>
