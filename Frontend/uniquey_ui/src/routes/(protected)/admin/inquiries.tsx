@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { format, differenceInDays } from "date-fns";
 import {
   Search, Loader2, Copy, CheckCircle2, MessageSquare,
-  Users, BedDouble, Bath, MapPin,X,
+  Users, BedDouble, Bath, MapPin, X,
   Home, Receipt, CreditCard, Clock
 } from "lucide-react";
 
@@ -264,7 +264,7 @@ function InquiriesPage() {
 
   const handleCopyMessage = () => {
     if (!active || !proposalLink) return;
-    const msg = `Hello ${active.first_name},\n\nHere are our recommendations for your stay in Kenya. You can review the details, photos, and select your preferred apartment here:\n\n${proposalLink}\n\nLet me know if you have any questions!\n- UNIQUEY Concierge`;
+    const msg = `Hello ${active.first_name},\n\nHere are our recommendations for your stay in Kenya. You can review the details, photos, and select your preferred apartment here:\n\n${proposalLink}\n\nLet me know if you have any questions!\nUNIQUEY Concierge`;
     navigator.clipboard.writeText(msg);
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2000);
@@ -273,7 +273,7 @@ function InquiriesPage() {
   const handleWhatsAppShare = () => {
     if (!active || !proposalLink) return;
     const cleanPhone = formatWhatsAppNumber(active.phone || "");
-    const msg = encodeURIComponent(`Hello ${active.first_name},\n\nHere are our recommendations for your stay in Kenya. You can review the details, photos, and select your preferred apartment here:\n\n${proposalLink}\n\nLet me know if you have any questions!\n- UNIQUEY Concierge`);
+    const msg = encodeURIComponent(`Hello ${active.first_name},\n\nHere are our recommendations for your stay in Kenya. You can review the details, photos, and select your preferred apartment here:\n\n${proposalLink}\n\nLet me know if you have any questions!\nUNIQUEY Concierge`);
     window.open(`https://api.whatsapp.com/send?phone=${cleanPhone}&text=${msg}`, "_blank");
   };
 
@@ -299,7 +299,7 @@ function InquiriesPage() {
   });
 
   return (
-    <div className="space-y-6 relative">
+    <div className="space-y-6 relative p-4 sm:p-6 lg:p-8">
       {zoomedImg && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4" onClick={() => setZoomedImg(null)}>
           <button className="absolute top-6 right-6 text-white bg-black/50 p-2 rounded-full hover:bg-black/80"><X className="h-6 w-6" /></button>
@@ -314,9 +314,9 @@ function InquiriesPage() {
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <Tabs defaultValue="all" onValueChange={setActiveTab}>
-          <TabsList>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <Tabs defaultValue="all" onValueChange={setActiveTab} className="w-full sm:w-auto overflow-x-auto pb-2 sm:pb-0">
+          <TabsList className="w-max sm:w-auto">
             <TabsTrigger value="all">All</TabsTrigger>
             <TabsTrigger value="new">New</TabsTrigger>
             <TabsTrigger value="quote_sent">Proposal Sent</TabsTrigger>
@@ -325,15 +325,15 @@ function InquiriesPage() {
             <TabsTrigger value="deposit_received">Deposit Paid</TabsTrigger>
           </TabsList>
         </Tabs>
-        <div className="relative w-full max-w-xs">
+        <div className="relative w-full sm:max-w-xs mt-2 sm:mt-0">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input placeholder="Search guests..." className="pl-9" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+          <Input placeholder="Search guests..." className="pl-9 w-full" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
         </div>
       </div>
 
-      <Card>
-        <CardContent className="p-0">
-          <Table>
+      <Card className="overflow-hidden">
+        <CardContent className="p-0 overflow-x-auto">
+          <Table className="min-w-[700px]">
             <TableHeader>
               <TableRow>
                 <TableHead>Ref</TableHead>
@@ -380,7 +380,7 @@ function InquiriesPage() {
       </Card>
 
       <Sheet open={!!active} onOpenChange={(o) => !o && setActive(null)}>
-        <SheetContent className="w-full sm:max-w-lg overflow-y-auto border-l">
+        <SheetContent className="flex h-dvh w-full max-w-full flex-col overflow-y-auto border-l p-4 sm:max-w-lg sm:p-6">
           {active && (
             <>
               <SheetHeader className="border-b pb-4">
@@ -401,7 +401,6 @@ function InquiriesPage() {
                       <SelectItem value="COMPLETED">Completed</SelectItem>
                     </SelectContent>
                   </Select>
-
                 </div>
                 <SheetTitle className="font-serif text-2xl pt-2">{active.first_name} {active.last_name}</SheetTitle>
                 <div className="flex flex-col text-sm text-muted-foreground mt-1">
@@ -410,7 +409,7 @@ function InquiriesPage() {
                 </div>
               </SheetHeader>
 
-              <div className="mt-6 space-y-6 text-sm">
+              <div className="mt-6 min-w-0 space-y-6 text-sm">
                 <div className="space-y-2">
                   <h3 className="text-xs font-semibold uppercase tracking-widest text-primary border-b pb-1">Client Accommodation Selection</h3>
                   {active.selected_accommodation ? (
@@ -482,7 +481,7 @@ function InquiriesPage() {
 
                 <div className="pt-4 border-t space-y-2">
                   {active.selected_accommodation && (
-                    <Button variant="hero" className="w-full" onClick={() => {
+                    <Button variant="hero" className="h-auto min-h-10 w-full whitespace-normal px-3 py-2 text-center" onClick={() => {
                         navigate({
                           to: "/admin/invoices",
                           search: {
@@ -497,7 +496,7 @@ function InquiriesPage() {
                       <Receipt className="mr-2 h-4 w-4" /> Review & Prepare Invoice Draft
                     </Button>
                   )}
-                  <Button variant={active.selected_accommodation ? "outline" : "hero"} className="w-full" onClick={handleOpenProposal}>
+                  <Button variant={active.selected_accommodation ? "outline" : "hero"} className="h-auto min-h-10 w-full whitespace-normal px-3 py-2 text-center" onClick={handleOpenProposal}>
                     {active.selected_accommodation ? "Send New Proposal Link" : "Create Proposal Link"}
                   </Button>
                 </div>
@@ -508,7 +507,7 @@ function InquiriesPage() {
       </Sheet>
 
       <Dialog open={isProposalOpen} onOpenChange={setIsProposalOpen}>
-        <DialogContent className="max-w-5xl max-h-[90vh] flex flex-col p-0 overflow-hidden">
+        <DialogContent className="flex h-[calc(100dvh-1rem)] max-h-[calc(100dvh-1rem)] max-w-5xl flex-col overflow-hidden p-0 sm:h-auto sm:max-h-[90vh]">
           <div className="p-6 pb-4 border-b">
             <DialogHeader>
               <DialogTitle className="font-serif text-2xl">Curate Proposal</DialogTitle>
@@ -544,9 +543,9 @@ function InquiriesPage() {
                   {proposalLink}
                 </a>
 
-                <div className="flex flex-wrap gap-3 justify-center">
-                  <Button variant="outline" onClick={handleCopyMessage}>{isCopied ? <CheckCircle2 className="mr-2 h-4 w-4" /> : <Copy className="mr-2 h-4 w-4" />} Copy Link</Button>
-                  <Button variant="hero" className="bg-[#25D366] hover:bg-[#20b858] text-white border-[#25D366]" onClick={handleWhatsAppShare}><MessageSquare className="mr-2 h-4 w-4" /> Share via WhatsApp</Button>
+                    <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
+                      <Button variant="outline" className="w-full sm:w-auto" onClick={handleCopyMessage}>{isCopied ? <CheckCircle2 className="mr-2 h-4 w-4" /> : <Copy className="mr-2 h-4 w-4" />} Copy Link</Button>
+                      <Button variant="hero" className="w-full border-[#25D366] bg-[#25D366] text-white hover:bg-[#20b858] sm:w-auto" onClick={handleWhatsAppShare}><MessageSquare className="mr-2 h-4 w-4" /> Share via WhatsApp</Button>
                 </div>
               </div>
             ) : (
@@ -575,11 +574,11 @@ function InquiriesPage() {
           </div>
 
           {!proposalLink && (
-            <div className="p-4 border-t bg-background flex items-center justify-between">
+            <div className="flex flex-col gap-3 border-t bg-background p-4 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-muted-foreground"><span className="font-bold text-foreground">{selectedProps.length}</span> properties selected</p>
-              <div className="flex gap-2">
-                <Button variant="ghost" onClick={() => setIsProposalOpen(false)}>Cancel</Button>
-                <Button variant="hero" onClick={handleGenerateProposal} disabled={selectedProps.length === 0 || isGenerating}>{isGenerating ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <CheckCircle2 className="h-4 w-4 mr-2" />} Generate Link</Button>
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <Button variant="ghost" className="w-full sm:w-auto" onClick={() => setIsProposalOpen(false)}>Cancel</Button>
+                <Button variant="hero" className="w-full sm:w-auto" onClick={handleGenerateProposal} disabled={selectedProps.length === 0 || isGenerating}>{isGenerating ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <CheckCircle2 className="h-4 w-4 mr-2" />} Generate Link</Button>
               </div>
             </div>
           )}

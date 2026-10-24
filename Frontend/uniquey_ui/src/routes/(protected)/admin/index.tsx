@@ -15,7 +15,6 @@ export const Route = createFileRoute("/(protected)/admin/")({
   component: AdminOverview,
 });
 
-// We map Django statuses to your UI classes
 const statusStyles: Record<string, string> = {
   NEW: "bg-primary/15 text-primary border-primary/30",
   CONTACTED: "bg-accent text-accent-foreground border-border",
@@ -32,7 +31,6 @@ function AdminOverview() {
     const fetchDashboardData = async () => {
       try {
         const response = await axiosInstance.get("inquiries/");
-        // Handle DRF paginated or unpaginated results
         const data = response.data.results || response.data;
         setInquiries(data);
       } catch (error) {
@@ -44,19 +42,16 @@ function AdminOverview() {
     fetchDashboardData();
   }, []);
 
-      // 1. Get the current hour to determine the greeting
-    const currentHour = new Date().getHours();
-    let timeOfDay = "evening";
-    if (currentHour < 12) timeOfDay = "morning";
-    else if (currentHour < 17) timeOfDay = "afternoon";
+  const currentHour = new Date().getHours();
+  let timeOfDay = "evening";
+  if (currentHour < 12) timeOfDay = "morning";
+  else if (currentHour < 17) timeOfDay = "afternoon";
 
-  // 1. Calculate real stats
   const totalInquiries = inquiries.length;
   const newToday = inquiries.filter(inq => isToday(new Date(inq.created_at))).length;
 
   const firstName = user?.first_name || "Admin";
 
-  // We keep your other KPIs static for now until we build those Django apps
   const dynamicKpis = [
     { label: "New inquiries", value: totalInquiries.toString(), delta: `+${newToday} today`, icon: Inbox, tone: "text-primary" },
     { label: "Active guests", value: "0", delta: "0 in-country", icon: Users, tone: "text-forest" },
@@ -65,14 +60,14 @@ function AdminOverview() {
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 p-4 sm:p-6 lg:p-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-xs uppercase tracking-[0.25em] text-primary">Overview</p>
-            <h1 className="mt-1 font-serif text-3xl text-foreground">
-              Good {timeOfDay}, {firstName}
-            </h1>
-            <p className="text-sm text-muted-foreground">
+          <h1 className="mt-1 font-serif text-3xl text-foreground">
+            Good {timeOfDay}, {firstName}
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">
             Here's what's happening across concierge operations today.
           </p>
         </div>
@@ -98,7 +93,7 @@ function AdminOverview() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2 overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
               <CardTitle className="font-serif">Recent inquiries</CardTitle>
@@ -106,8 +101,8 @@ function AdminOverview() {
             </div>
             <Button variant="ghost" size="sm">View all</Button>
           </CardHeader>
-          <CardContent className="p-0">
-            <Table>
+          <CardContent className="p-0 overflow-x-auto">
+            <Table className="min-w-[600px]">
               <TableHeader>
                 <TableRow>
                   <TableHead>Ref</TableHead>
@@ -131,7 +126,6 @@ function AdminOverview() {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  // Slice to show only the 5 most recent
                   inquiries.slice(0, 5).map((inq) => (
                     <TableRow key={inq.id}>
                       <TableCell className="font-mono text-xs text-muted-foreground">
@@ -161,7 +155,6 @@ function AdminOverview() {
             <p className="text-xs text-muted-foreground">Next 24 hours</p>
           </CardHeader>
           <CardContent className="space-y-4">
-            {/* Kept your static operations list for layout integrity */}
             {[
               { icon: Plane, tint: "text-primary", title: "KQ102 · JKIA pickup", meta: "14:20 · Driver: Peter M." },
               { icon: CheckCircle2, tint: "text-forest", title: "Apartment check-in · Westlands 3B", meta: "16:00 · Guest: D. Chen" },

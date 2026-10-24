@@ -307,21 +307,21 @@ function AdminInvoices() {
             const balanceDue = Number(inv.grand_total || 0) - amountPaid;
 
             return (
-              <Card key={inv.id} className="border-border/60 overflow-hidden flex flex-col">
+              <Card key={inv.id} className="border-border/60 bg-background overflow-hidden flex flex-col">
                 <CardContent className="space-y-4 p-5 flex flex-col flex-1">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <p className="font-serif text-lg text-foreground flex items-center gap-1.5">
+                      <p className="font-serif text-lg font-semibold text-foreground flex items-center gap-1.5">
                         <FileText className="h-4 w-4 text-primary" /> {inv.invoice_number}
                       </p>
-                      <p className="text-xs text-muted-foreground">{inv.guest_name || inv.guest_email}</p>
+                      <p className="text-sm text-foreground">{inv.guest_name || inv.guest_email}</p>
                     </div>
                     <Badge variant="outline" className={isLocked ? "bg-forest/15 text-forest border-forest/30" : "bg-muted text-muted-foreground"}>
                       {inv.status_display || inv.status}
                     </Badge>
                   </div>
 
-                  <div className="space-y-1.5 bg-muted/30 p-3 rounded-lg text-sm border">
+                  <div className="space-y-1.5 bg-background p-3 rounded-lg text-sm border">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Stay Total:</span>
                       <span>{inv.currency} {Number(inv.accommodation_total || 0).toLocaleString()}</span>
@@ -390,10 +390,10 @@ function AdminInvoices() {
 
       {/* EDITOR MODAL ... */}
       <Dialog open={open} onOpenChange={(isOpen) => !isOpen && handleCloseModal()}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[calc(100dvh-1rem)] overflow-y-auto p-4 sm:max-h-[90vh] sm:p-6">
           <DialogHeader>
             <DialogTitle className="font-serif">{isEditing ? "Review & Edit Invoice" : "Prepare Invoice Draft"}</DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-foreground">
               {draft.guest_name || draft.guest_email
                 ? <span className="block font-medium text-foreground mb-1">Billed to: {draft.guest_name || draft.guest_email}</span>
                 : <span className="block font-medium text-destructive mb-1">No guest linked.</span>}
@@ -409,7 +409,7 @@ function AdminInvoices() {
               <Input value={draft.invoice_number} onChange={(e) => setDraft({ ...draft, invoice_number: e.target.value })} />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <Label>Guest Full Name</Label>
                 <Input value={draft.guest_name} onChange={(e) => setDraft({ ...draft, guest_name: e.target.value })} placeholder="John Doe" />
@@ -420,7 +420,7 @@ function AdminInvoices() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <Label>Accommodation Total</Label>
                 <Input
@@ -444,7 +444,7 @@ function AdminInvoices() {
               </div>
             </div>
 
-            <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 grid grid-cols-3 gap-4 text-sm">
+            <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 grid grid-cols-1 gap-4 text-sm sm:grid-cols-3">
               <div>
                 <p className="text-xs text-muted-foreground">Grand Total</p>
                 <p className="font-serif text-xl text-foreground mt-0.5">{draft.currency} {liveGrandTotal.toLocaleString()}</p>
@@ -459,7 +459,7 @@ function AdminInvoices() {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               <div className="space-y-1.5">
                 <Label>Deposit Due Date</Label>
                 <Input type="date" value={draft.due_date} onChange={(e) => setDraft({ ...draft, due_date: e.target.value })} />
@@ -493,13 +493,13 @@ function AdminInvoices() {
 
       {/* CLIENT PREVIEW & RECEIPT MODAL */}
       <Dialog open={!!previewInv} onOpenChange={(o) => !o && setPreviewInv(null)}>
-        <DialogContent className="max-w-md bg-muted/30 p-4">
+        <DialogContent className="max-w-md bg-background p-4 sm:p-6">
           <DialogHeader className="text-center pb-0">
             <div className="mx-auto bg-white p-2.5 rounded-full shadow-sm w-fit mb-2"><Receipt className="h-5 w-5 text-primary" /></div>
             <DialogTitle className="font-serif text-xl">
               {previewInv?.status === "PAID" ? "Receipt" : "Invoice"} {previewInv?.invoice_number}
             </DialogTitle>
-            <DialogDescription className="text-xs">Billed to: <span className="text-foreground font-medium">{previewInv?.guest_name || previewInv?.guest_email}</span></DialogDescription>
+            <DialogDescription className="text-xs text-foreground">Billed to: <span className="font-semibold">{previewInv?.guest_name || previewInv?.guest_email}</span></DialogDescription>
           </DialogHeader>
 
           {previewInv && (() => {
