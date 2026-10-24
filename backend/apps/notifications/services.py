@@ -13,15 +13,30 @@ class NotificationService:
             )
 
     @staticmethod
-    def send_guest_email(email: str, title: str, message: str):
-        """
-        Sends an email directly to an email address without requiring a Customer DB link.
-        """
-        notification = Notification.objects.create(
-            guest_email=email,
-            title=title,
-            message=message,
-            channel='EMAIL',
-            status='QUEUED'
-        )
-        send_email_message.delay(str(notification.id))
+    def send_guest_email(email: str, title: str, message: str, customer=None):
+            """
+            Creates a notification record and attempts to pass it to Celery.
+            If Celery is down, it catches the error so it doesn't break the payment transaction!
+            """
+            # 1. Save the email attempt to the database
+            notification = Notification.objects.create(
+                guest_email=email,
+                recipient_customer=customer,
+                channel='EMAIL',
+                title=title,
+                message=message,
+                status='PENDING'
+            )
+
+            # 2. Try to trigger Celery safely
+            try:
+                send_email_message.delay(notification.id)
+            except Exception as e:
+                # If Redis/Celery is broken, print the error but DO NOT crash the app
+                print(f"⚠️ Warning: Payment succeeded, but Celery failed to queue the email. Error: {str(e)}")
+
+                notification.status = 'FAILED'
+                notification.failure_reason = "Redis/Celery connection failed"
+                notification.save(update_fields=['status', 'failure_reason'])
+
+            return notification
