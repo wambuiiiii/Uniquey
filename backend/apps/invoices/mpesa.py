@@ -41,7 +41,13 @@ class DarajaService:
         amount_to_send = 1  # Keep at 1 for Sandbox testing
 
         # Dynamically uses Ngrok locally, or Northflank in production
-        base_url = getattr(settings, 'BASE_API_URL', 'https://api.uniqueytravels.com').rstrip('/')
+        # Safely fetch the URL. If it's completely empty in the .env, force the live domain.
+        base_url = getattr(settings, 'BASE_API_URL', None)
+
+        if not base_url:
+            base_url = 'https://api.uniqueytravels.com'
+
+        base_url = base_url.rstrip('/')
         callback_url = f"{base_url}/api/v1/invoices/{invoice.id}/mpesa_callback/"
 
         payload = {

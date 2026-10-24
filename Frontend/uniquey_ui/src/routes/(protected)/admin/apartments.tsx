@@ -289,7 +289,7 @@ function AdminProperties() {
                     <>
                       <UploadCloud className="h-8 w-8 text-muted-foreground mb-2" />
                       <p className="text-sm font-medium">Click or drag & drop photos here</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">Files are automatically compressed to WebP.</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">Select multiple photos at once. Files are automatically compressed to WebP.</p>
                     </>
                   )}
                 </div>
@@ -297,8 +297,8 @@ function AdminProperties() {
                   <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 pt-2">
                     {imagePreviews.map((src, idx) => (
                       <div key={idx} className="relative group rounded-md overflow-hidden border aspect-video bg-muted">
-                        <img src={src} className="h-full w-full object-cover" />
-                        <button type="button" onClick={() => removeSelectedFile(idx)} className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"><X className="h-3 w-3" /></button>
+                        <img src={src} className="h-full w-full object-cover" alt={`Selected property photo ${idx + 1}`} />
+                        <button type="button" aria-label={`Remove photo ${idx + 1}`} onClick={() => removeSelectedFile(idx)} className="absolute right-1 top-1 rounded-full bg-black/60 p-1 text-white opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100"><X className="h-3 w-3" /></button>
                       </div>
                     ))}
                   </div>

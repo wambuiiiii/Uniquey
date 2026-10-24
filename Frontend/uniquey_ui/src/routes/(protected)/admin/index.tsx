@@ -7,6 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 import { useAuth } from "@/context/AuthContext";
 import axiosInstance from "@/api/axios";
@@ -26,6 +30,13 @@ function AdminOverview() {
   const { user } = useAuth();
   const [inquiries, setInquiries] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isInquiryOpen, setIsInquiryOpen] = useState(false);
+  const [isSavingInquiry, setIsSavingInquiry] = useState(false);
+  const [inquiryDraft, setInquiryDraft] = useState({
+    first_name: "", last_name: "", email: "", phone: "", nationality: "",
+    arrival_date: "", departure_date: "", guests: "1", purpose: "VACATION",
+    preferred_location: "", special_requests: "",
+  });
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -59,6 +70,41 @@ function AdminOverview() {
     { label: "Revenue (mo)", value: "KES 0", delta: "+0% vs last", icon: Wallet, tone: "text-forest" },
   ];
 
+  const handleCreateInquiry = async () => {
+    if (!inquiryDraft.first_name || !inquiryDraft.last_name || !inquiryDraft.email ||
+      !inquiryDraft.phone || !inquiryDraft.nationality || !inquiryDraft.arrival_date ||
+      !inquiryDraft.departure_date) {
+      alert("Please complete all required inquiry details.");
+      return;
+    }
+    if (inquiryDraft.departure_date <= inquiryDraft.arrival_date) {
+      alert("Departure date must be after arrival date.");
+      return;
+    }
+
+    setIsSavingInquiry(true);
+    try {
+      const response = await axiosInstance.post("inquiries/", {
+        ...inquiryDraft,
+        guests: Number(inquiryDraft.guests),
+        budget_min: 0,
+        budget_max: 0,
+      });
+      setInquiries((prev) => [response.data, ...prev]);
+      setIsInquiryOpen(false);
+      setInquiryDraft({
+        first_name: "", last_name: "", email: "", phone: "", nationality: "",
+        arrival_date: "", departure_date: "", guests: "1", purpose: "VACATION",
+        preferred_location: "", special_requests: "",
+      });
+    } catch (error: any) {
+      console.error("Failed to create inquiry", error);
+      alert(`Failed to create inquiry.${error.response?.data ? `\n${JSON.stringify(error.response.data)}` : ""}`);
+    } finally {
+      setIsSavingInquiry(false);
+    }
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
@@ -71,11 +117,49 @@ function AdminOverview() {
             Here's what's happening across concierge operations today.
           </p>
         </div>
-        <Button variant="hero">
+        <Button variant="hero" onClick={() => setIsInquiryOpen(true)}>
           New Inquiry
           <ArrowUpRight className="ml-1 h-4 w-4" />
         </Button>
       </div>
+
+      <Dialog open={isInquiryOpen} onOpenChange={setIsInquiryOpen}>
+        <DialogContent className="max-h-[calc(100dvh-1rem)] max-w-2xl overflow-y-auto p-4 sm:max-h-[90vh] sm:p-6">
+          <DialogHeader>
+            <DialogTitle className="font-serif">Create New Inquiry</DialogTitle>
+            <DialogDescription>Enter the guest and trip details manually.</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="space-y-1.5"><Label>First Name *</Label><Input value={inquiryDraft.first_name} onChange={(e) => setInquiryDraft({ ...inquiryDraft, first_name: e.target.value })} /></div>
+              <div className="space-y-1.5"><Label>Last Name *</Label><Input value={inquiryDraft.last_name} onChange={(e) => setInquiryDraft({ ...inquiryDraft, last_name: e.target.value })} /></div>
+              <div className="space-y-1.5"><Label>Email *</Label><Input type="email" value={inquiryDraft.email} onChange={(e) => setInquiryDraft({ ...inquiryDraft, email: e.target.value })} /></div>
+              <div className="space-y-1.5"><Label>Phone *</Label><Input value={inquiryDraft.phone} onChange={(e) => setInquiryDraft({ ...inquiryDraft, phone: e.target.value })} /></div>
+              <div className="space-y-1.5"><Label>Nationality *</Label><Input value={inquiryDraft.nationality} onChange={(e) => setInquiryDraft({ ...inquiryDraft, nationality: e.target.value })} /></div>
+              <div className="space-y-1.5"><Label>Guests *</Label><Input type="number" min="1" value={inquiryDraft.guests} onChange={(e) => setInquiryDraft({ ...inquiryDraft, guests: e.target.value })} /></div>
+              <div className="space-y-1.5"><Label>Arrival Date *</Label><Input type="date" value={inquiryDraft.arrival_date} onChange={(e) => setInquiryDraft({ ...inquiryDraft, arrival_date: e.target.value })} /></div>
+              <div className="space-y-1.5"><Label>Departure Date *</Label><Input type="date" value={inquiryDraft.departure_date} onChange={(e) => setInquiryDraft({ ...inquiryDraft, departure_date: e.target.value })} /></div>
+            </div>
+            <div className="space-y-1.5">
+              <Label>Purpose</Label>
+              <select className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm" value={inquiryDraft.purpose} onChange={(e) => setInquiryDraft({ ...inquiryDraft, purpose: e.target.value })}>
+                <option value="VACATION">Vacation</option>
+                <option value="BUSINESS">Business</option>
+                <option value="MEDICAL">Medical</option>
+                <option value="DIASPORA">Diaspora Visit</option>
+              </select>
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="space-y-1.5"><Label>Preferred Location</Label><Input value={inquiryDraft.preferred_location} onChange={(e) => setInquiryDraft({ ...inquiryDraft, preferred_location: e.target.value })} /></div>
+              <div className="space-y-1.5"><Label>Special Requests</Label><Textarea value={inquiryDraft.special_requests} onChange={(e) => setInquiryDraft({ ...inquiryDraft, special_requests: e.target.value })} /></div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setIsInquiryOpen(false)}>Cancel</Button>
+            <Button variant="hero" onClick={handleCreateInquiry} disabled={isSavingInquiry}>{isSavingInquiry ? "Creating..." : "Create Inquiry"}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {dynamicKpis.map((k) => (
